@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#2E3F4E">
+<title>Canvas Student</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#10151A;--card:#1A1F25;--top:#2E3F4E;--line:#272E35;--blue:#2B8AEF;--mut:#9AA3AB;color-scheme:dark}
+*{box-sizing:border-box;margin:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;background:#000;color:#fff;font-family:Lato,-apple-system,"Segoe UI",Roboto,sans-serif;overflow:hidden}
+#app{position:relative;height:100%;max-width:430px;margin:0 auto;background:var(--bg);display:flex;flex-direction:column;overflow:hidden}
+@media(min-width:500px){body{display:flex;align-items:center}#app{height:min(100%,900px);border-radius:36px;border:8px solid #222}}
+header{background:var(--top);padding:calc(env(safe-area-inset-top,0px) + 14px) 14px 14px;display:flex;align-items:center;gap:22px;min-height:calc(env(safe-area-inset-top,0px) + 64px)}
+header .t{flex:1;min-width:0}
+header h1{font-size:19px;font-weight:400;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+header small{display:block;font-size:13px;opacity:.85}
+button{background:none;border:0;color:inherit;font:inherit;cursor:pointer;display:flex;align-items:center}
+svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;flex:none}
+main{flex:1;overflow-y:auto;position:relative}
+nav{display:flex;justify-content:space-around;background:#1A1F25;border-top:1px solid var(--line);padding:8px 0 calc(env(safe-area-inset-bottom,0px) + 8px)}
+nav button{flex-direction:column;gap:4px;font-size:11px;color:#E8EAEC;position:relative;padding:2px 6px}
+nav .on{color:var(--blue)}
+.dot{position:absolute;top:-3px;right:4px;background:#E53935;font-size:9px;border-radius:9px;padding:1px 5px}
+.pad{padding:18px 14px}
+.h2{display:flex;justify-content:space-between;align-items:baseline;margin:4px 4px 18px}
+.h2 b{font-size:27px;font-weight:400}.h2 a{color:var(--blue);font-size:16px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.grid.l{grid-template-columns:1fr}
+.cc{background:var(--card);border-radius:4px;overflow:hidden;box-shadow:0 1px 3px #0008}
+.bn{height:82px;position:relative;overflow:hidden}
+.bn svg{width:100%;height:100%;stroke:none}
+.bn .o{position:absolute;inset:0}
+.bn .m{position:absolute;right:8px;top:8px;z-index:2}.bn .m svg{width:20px;height:20px;fill:#000;stroke:none}
+.cc .tx{padding:10px 12px 14px;min-height:84px}
+.cc .tx b{display:block;font-weight:400;font-size:17px;line-height:1.25}
+.cc .tx i{display:block;font-style:normal;color:var(--mut);font-size:13px;margin-top:5px;line-height:1.3}
+.home{margin:16px 14px 8px;background:var(--card);border-radius:10px;padding:18px;display:flex;align-items:center;box-shadow:0 1px 4px #0008}
+.home div{flex:1}.home b{display:block;font-size:26px;font-weight:400}.home i{font-style:normal;color:var(--mut);font-size:15px}
+.li{display:flex;align-items:center;gap:30px;padding:21px 18px;font-size:19px}
+.li svg{width:28px;height:28px}
+.lti{width:28px;text-align:center;font-weight:700;font-size:15px}
+.row{background:var(--card);border-bottom:1px solid var(--line);padding:14px;display:flex;gap:14px;align-items:center;font-size:15px}
+.row small{display:block;color:var(--mut);font-size:12px;margin-top:3px;line-height:1.4}.row .g{flex:1}
+.pill{font-size:12px;padding:2px 8px;border-radius:10px;background:#2B8AEF22;color:#6DB3FF}
+.sec{font-size:12px;color:var(--mut);margin:16px 14px 6px;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+.mod h3{background:#232A31;font-weight:700;font-size:14px;padding:12px 14px}
+.big{font-size:44px;font-weight:400;text-align:center;margin:20px 0 2px}
+.btn{display:block;background:var(--blue);padding:13px;border-radius:6px;margin-top:20px;text-align:center;font-weight:700}
+.av{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;flex:none}
+#drawer{position:absolute;inset:0;z-index:50;display:flex;transform:translateX(-100%);transition:transform .25s}
+#drawer.open{transform:none}
+#drawer .p{width:80%;max-width:300px;background:#1A2027;padding:calc(env(safe-area-inset-top,0px) + 22px) 18px 18px}
+#drawer .s{flex:1;background:#000A}
+#drawer a{display:flex;gap:18px;padding:14px 0;font-size:16px;color:#e6e6e6;align-items:center}
+#modal{position:absolute;inset:0;z-index:60;background:var(--bg);display:none;flex-direction:column}
+#modal.open{display:flex}
+#mb{padding:20px 16px;overflow-y:auto;flex:1;line-height:1.6;font-size:16px}
+#mb h2{font-size:24px;font-weight:400;margin-bottom:6px}
+</style>
+</head>
+<body>
+<div id="app">
+  <header id="hd"></header>
+  <main id="main"></main>
+  <nav id="nav"></nav>
+  <div id="drawer"><div class="p">
+    <div style="display:flex;gap:14px;align-items:center;padding-bottom:16px;border-bottom:1px solid var(--line)">
+      <div class="av" style="width:52px;height:52px;background:linear-gradient(135deg,#2563eb,#4f46e5)">AJ</div>
+      <div><b style="font-weight:700">Alex Johnson</b><div style="font-size:13px;color:var(--mut)">Seminole State College</div></div>
+    </div>
+    <div id="dl" style="margin-top:8px"></div>
+    <div style="position:absolute;bottom:20px;font-size:12px;color:var(--mut)">Canvas Student v7.14.2</div>
+  </div><div class="s" onclick="drawer(0)"></div></div>
+  <div id="modal">
+    <header><button onclick="closeM()"><svg viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></button><div class="t"><h1 id="mt"></h1></div></header>
+    <div id="mb"></div>
+  </div>
+</div>
+<script>
+const I={
+menu:'<path d="M3 6h18M3 12h18M3 18h18"/>',back:'<path d="M19 12H5M12 19l-7-7 7-7"/>',arrow:'<path d="M5 12h14M12 5l7 7-7 7"/>',
+nb:'<rect x="6" y="3" width="14" height="18" rx="2"/><path d="M3 7h4M3 12h4M3 17h4"/>',
+layout:'<rect x="3" y="4" width="18" height="7" fill="#fff" stroke="none"/><rect x="3" y="13" width="18" height="7" fill="#fff" stroke="none"/>',
+dashboard:'<path d="M3 17a9 9 0 0 1 18 0"/><path d="M12 17l3-5"/>',
+calendar:'<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>',
+todo:'<path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M8 12h2M12 12h4M8 17h2M12 17h4"/>',
+notifications:'<path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 0 1-3.46 0"/>',
+inbox:'<rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 6l-10 7L2 6"/>',
+modules:'<path d="M21 16V8l-9-5-9 5v8l9 5z"/><path d="M3.3 7L12 12l8.7-5M12 22V12"/>',
+announcements:'<path d="M3 11v2a1 1 0 0 0 1 1h3l7 4V6L7 10H4a1 1 0 0 0-1 1zM18 8a5 5 0 0 1 0 8"/>',
+discussions:'<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M8 9h8M8 13h5"/>',
+grades:'<path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9"/>',
+people:'<circle cx="9" cy="8" r="4"/><path d="M1 21a8 8 0 0 1 16 0M16 4a4 4 0 0 1 0 8M23 21a7 7 0 0 0-5-6.7"/>',
+help:'<circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.7.4-1 1-1 1.7M12 17h.01"/>',
+dots:'<circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/>'};
+const ic=(n,x="")=>`<svg viewBox="0 0 24 24" ${x}>${I[n]}</svg>`;
+
+const C={
+psy:{n:"General Psychology - PSY2012",s:"PSY2012-0001 Fall 2026",big:"psychology",c:"#E8648A",g:91.4,l:"A–",p:"Dr. Maria Alvarez",
+ w:["mind","brain","memory","behavior","cognition","Freud","learning","emotion","perception","therapy","Pavlov","Skinner","bias","motivation","stress","sleep","dreams","personality"],
+ lti:["Library Research Help","Tutoring Center","Respondus LockDown Browser"],
+ ann:[["Quiz 3 is now open","Nov 18","Quiz 3 covers Chapters 5–6 and closes Nov 19 at 11:59 PM. You have one attempt."],["Research paper drafts due Nov 24","Nov 14","Please upload your APA-formatted draft by Monday. Office hours are Thursday 2–4 PM."],["Case study grades posted","Nov 13","Grades are in. Review my comments before starting your research paper."]],
+ m:[
+  {n:"Module 1: Introduction to Psychology",i:[
+   {t:"page",n:"Welcome & Syllabus",b:"Welcome to General Psychology! This course surveys the scientific study of behavior and mental processes. Please read the syllabus carefully, including the attendance and late-work policies."},
+   {t:"vid",n:"Lecture: History of Psychology",b:"Watch the 24-minute lecture covering Wundt, Freud, Watson, and the cognitive revolution."},
+   {t:"asg",n:"Discussion Post: Why Study Psychology?",d:"Sep 4",pts:20,s:19,b:"Write a 250-word post on why you chose this course and one question you hope to answer."},
+   {t:"quiz",n:"Quiz 1: Chapter 1",d:"Sep 8",pts:30,s:28,b:"15 multiple-choice questions. 20 minutes. One attempt."}]},
+  {n:"Module 2: Biological Bases of Behavior",i:[
+   {t:"page",n:"Reading: The Nervous System",b:"Read Chapter 2, sections 2.1 to 2.4: neurons, neurotransmitters, and the structure of the brain."},
+   {t:"asg",n:"Lab Report: Reaction Time",d:"Oct 2",pts:50,s:44,b:"Complete the reaction-time experiment and submit a one-page summary of your findings."},
+   {t:"quiz",n:"Quiz 2: Chapters 2–3",d:"Oct 13",pts:30,s:27,b:"20 questions covering the nervous system and sensation."}]},
+  {n:"Module 3: Learning & Memory",i:[
+   {t:"vid",n:"Lecture: Classical vs. Operant Conditioning",b:"Pavlov, Skinner, and Bandura. Take notes on the key differences."},
+   {t:"asg",n:"Case Study Analysis",d:"Nov 12",pts:50,s:46,b:"Analyze the provided case study using at least two learning theories."},
+   {t:"quiz",n:"Quiz 3: Chapters 5–6",d:"Nov 19",pts:30,b:"20 questions on learning and memory. Opens Nov 18 at 8:00 AM."}]},
+  {n:"Module 4: Personality & Disorders",i:[
+   {t:"page",n:"Reading: Theories of Personality",b:"Read Chapter 10. Focus on the Big Five and psychodynamic approaches."},
+   {t:"asg",n:"Research Paper Draft",d:"Nov 24",pts:100,b:"Submit a 3–4 page APA-formatted draft on a topic of your choice from Chapters 1–10."},
+   {t:"disc",n:"Discussion: Nature vs. Nurture",d:"Dec 1",pts:20,b:"Post your initial response by Dec 1 and reply to two classmates by Dec 3."}]}]},
+eco:{n:"Macroeconomics - ECO2013",s:"ECO2013-0003 Fall 2026",big:"macroeconomics",c:"#7B96DC",g:87.2,l:"B+",p:"Prof. James Whitfield",
+ w:["GDP","inflation","fiscal","monetary","supply","demand","Keynes","Fed","interest","unemployment","trade","growth","recession","CPI","deficit","money","banks","taxes"],
+ lti:["FRED Economic Data","Khan Academy","Tutoring Center"],
+ ann:[["Policy Brief due Nov 20","Nov 17","Remember to cite at least three FRED data series in your brief."],["Quiz 3 opens Thursday","Nov 15","Covers AD-AS and fiscal policy. Review the practice problems in Module 3."],["Final exam review session","Nov 12","I’ll hold a review session the week before finals. Details to follow."]],
+ m:[
+  {n:"Module 1: Introduction to Economics",i:[
+   {t:"page",n:"Welcome & Syllabus",b:"This course introduces the economy as a whole: output, jobs, prices, and the policies that shape them."},
+   {t:"vid",n:"Lecture: Scarcity & Opportunity Cost",b:"A 20-minute lecture on scarcity, trade-offs, and the production possibilities frontier."},
+   {t:"asg",n:"Discussion: Why Economics Matters",d:"Sep 5",pts:20,s:18,b:"Post 200 words on an economic trade-off you faced recently."},
+   {t:"quiz",n:"Quiz 1: Chapters 1–2",d:"Sep 12",pts:30,s:26,b:"15 multiple-choice questions on basic concepts."}]},
+  {n:"Module 2: Measuring Economic Performance",i:[
+   {t:"page",n:"Reading: GDP, Inflation & Unemployment",b:"Read Chapters 5–7. Focus on how GDP and CPI are calculated and their limitations."},
+   {t:"asg",n:"Data Assignment: GDP Growth",d:"Oct 5",pts:50,s:43,b:"Use FRED to chart U.S. real GDP growth for 2000–2025 and write a one-page interpretation."},
+   {t:"quiz",n:"Quiz 2: Chapters 5–7",d:"Oct 17",pts:30,s:25,b:"20 questions on macroeconomic measurement."}]},
+  {n:"Module 3: Aggregate Demand & Fiscal Policy",i:[
+   {t:"vid",n:"Lecture: The AD-AS Model",b:"Shifts in aggregate demand and supply and what they mean for output and prices."},
+   {t:"asg",n:"Policy Brief: Fiscal Stimulus",d:"Nov 20",pts:100,b:"Write a 3-page brief recommending a fiscal response to a hypothetical recession."},
+   {t:"quiz",n:"Quiz 3: Chapters 10–12",d:"Nov 22",pts:30,b:"20 questions on AD-AS, multipliers, and fiscal policy."}]},
+  {n:"Module 4: Money, Banking & Monetary Policy",i:[
+   {t:"page",n:"Reading: The Federal Reserve",b:"Read Chapter 14 on the Fed’s tools: interest rates, open market operations, and reserve requirements."},
+   {t:"disc",n:"Discussion: Should the Fed Be Independent?",d:"Dec 1",pts:20,b:"Post your position by Dec 1 and respond to two classmates by Dec 3."},
+   {t:"asg",n:"Final Exam",d:"Dec 8",pts:150,b:"Cumulative exam covering Modules 1–4. 90 minutes."}]}]}
+};
+const NOTES=[["Grade posted: Case Study Analysis (46/50)","General Psychology","2h ago"],["Quiz 3: Chapters 5–6 is now available","General Psychology","5h ago"],["Announcement: Policy Brief due Nov 20","Macroeconomics","Yesterday"],["Due soon: Policy Brief: Fiscal Stimulus","Macroeconomics","Yesterday"]];
+const MAIL=[["Dr. Maria Alvarez","Research paper topics","Hi Alex, your topic on sleep and memory sounds great. Please narrow it to a single research question before the draft is due.","Nov 17"],["Prof. James Whitfield","Policy brief question","Good question. Yes, you may use the CBO projections as a source, as long as you cite them.","Nov 16"]];
+const SUBS={modules:"Modules",announcements:"Announcements",discussions:"Discussions",grades:"Grades",people:"People"};
+const TI={page:"📄",vid:"▶️",asg:"📝",quiz:"❓",disc:"💬"};
+let S={tab:"dashboard",course:null,sub:null,list:false};
+const $=id=>document.getElementById(id),when=d=>Date.parse(d+" 2026");
+const all=()=>Object.entries(C).flatMap(([k,c])=>c.m.flatMap((m,mi)=>m.i.map((it,ii)=>({...it,k,mi,ii,cn:c.n.split(" - ")[0]}))));
+
+function banner(k,tall){const c=C[k];let t="";
+ for(let i=0;i<46;i++){const x=(i*137)%420-10,y=((i*61)%170)+14,f=10+(i*7)%24,col=["#fff","#222","#8a6d00","#7c4dff","#fff"][i%5];
+  t+=`<text x="${x}" y="${y}" font-size="${f}" font-weight="700" fill="${col}" opacity=".85">${c.w[i%c.w.length]}</text>`}
+ t+=`<text x="200" y="104" text-anchor="middle" font-size="${c.big.length>11?44:62}" font-weight="700" fill="#000">${c.big}</text>`;
+ return `<div class="bn" style="${tall?"height:190px":""};background:#fff"><svg viewBox="0 0 400 190" preserveAspectRatio="xMidYMid slice">${t}</svg>${tall?"":`<div class="o" style="background:${c.c};opacity:.62"></div><button class="m">${ic("dots")}</button>`}</div>`}
+function card(k){const c=C[k];return `<div class="cc" onclick="openCourse('${k}')">${banner(k)}<div class="tx"><b style="color:${c.c}">${c.n}</b><i>${c.s}</i></div></div>`}
+function row(it,show){return `<div class="row" onclick="openItem('${it.k}',${it.mi},${it.ii})"><span style="font-size:22px">${TI[it.t]}</span><div class="g">${it.n}<small>${it.d?"Due "+it.d+(it.pts?" · "+it.pts+" pts":""):"Not graded"}${show?" · "+it.cn:""}</small></div>${it.s!=null?`<span class="pill">${it.s}/${it.pts}</span>`:""}</div>`}
+
+const V={
+dashboard(){return `<div class="pad"><div class="h2"><b>Courses</b><a>All Courses</a></div><div class="grid ${S.list?"l":""}">${Object.keys(C).map(card).join("")}</div></div>`},
+calendar(){const g={};all().filter(i=>i.d).sort((a,b)=>when(a.d)-when(b.d)).forEach(i=>(g[i.d]=g[i.d]||[]).push(i));return Object.entries(g).map(([d,l])=>`<div class="sec">${d}, 2026</div>${l.map(i=>row(i,1)).join("")}`).join("")},
+todo(){const l=all().filter(i=>i.d&&i.s==null).sort((a,b)=>when(a.d)-when(b.d));return `<div class="sec">Upcoming (${l.length})</div>`+l.map(i=>row(i,1)).join("")},
+notifications(){return NOTES.map(n=>`<div class="row"><span style="font-size:22px">🔔</span><div class="g">${n[0]}<small>${n[1]} · ${n[2]}</small></div></div>`).join("")},
+inbox(){return MAIL.map((m,i)=>`<div class="row" onclick="openMail(${i})"><div class="av" style="background:#33414E">${m[0].split(" ").slice(-2).map(x=>x[0]).join("")}</div><div class="g"><b>${m[0]}</b><br>${m[1]}<small>${m[2].slice(0,58)}…</small></div><small>${m[3]}</small></div>`).join("")},
+course(){const k=S.course,c=C[k],x=S.sub;
+ if(!x)return banner(k,1)+`<div class="home" onclick="sub('modules')"><div><b>Home</b><i>Modules</i></div>${ic("arrow","style='width:30px;height:30px'")}</div>`+
+  Object.keys(SUBS).map(s=>`<div class="li" onclick="sub('${s}')">${ic(s,`style="color:${c.c}"`)}${SUBS[s]}</div>`).join("")+
+  c.lti.map(l=>`<div class="li" onclick="sub('lti:${l}')"><span class="lti" style="color:${c.c}">LTI</span>${l}</div>`).join("");
+ if(x=="modules")return c.m.map((m,mi)=>`<div class="mod"><h3>${m.n}</h3>${m.i.map((it,ii)=>row({...it,k,mi,ii})).join("")}</div>`).join("");
+ if(x=="announcements")return c.ann.map(a=>`<div class="row" style="align-items:flex-start"><div class="av" style="background:${c.c}">${c.p.split(" ").slice(-2).map(y=>y[0]).join("")}</div><div class="g"><b>${a[0]}</b><small>${c.p} · ${a[1]}</small><p style="margin-top:8px;font-size:14px;color:#ccc">${a[2]}</p></div></div>`).join("");
+ if(x=="discussions")return all().filter(i=>i.k==k&&(i.t=="disc"||/Discussion/.test(i.n))).map(i=>row(i)).join("");
+ if(x=="grades"){const g=all().filter(i=>i.k==k&&i.pts);return `<div class="big">${c.g}%</div><div style="text-align:center;color:var(--mut);margin-bottom:16px">Current grade: ${c.l}</div>`+g.map(i=>`<div class="row"><div class="g">${i.n}<small>${i.d||""}</small></div><b style="font-weight:700">${i.s!=null?i.s:"–"} / ${i.pts}</b></div>`).join("")}
+ if(x=="people"){const p=[[c.p,"Teacher"],["Jordan Lee","Teaching Assistant"],["Priya Patel","Student"],["Marcus Reed","Student"],["Sofia Alvarado","Student"],["Daniel Kim","Student"]];return p.map(a=>`<div class="row"><div class="av" style="background:${c.c}">${a[0].split(" ").slice(-2).map(y=>y[0]).join("")}</div><div class="g">${a[0]}<small>${a[1]}</small></div></div>`).join("")}
+ return `<div class="pad"><h2 style="font-weight:400;margin-bottom:10px">${x.slice(4)}</h2><p style="color:var(--mut);line-height:1.6">This external tool opens in a secure browser window when launched from the Canvas Student app.</p><div class="btn">Launch</div></div>`}
+};
+function render(){
+ const t=S.tab,inC=t=="course",c=inC&&C[S.course],h=$("hd");
+ h.style.background=inC?c.c:"";
+ const title=!inC?{dashboard:"Dashboard",calendar:"Calendar",todo:"To-do",notifications:"Notifications",inbox:"Inbox"}[t]:(S.sub?(SUBS[S.sub]||S.sub.slice(4)):c.n);
+ h.innerHTML=(inC?`<button onclick="back()">${ic("back")}</button>`:`<button onclick="drawer(1)">${ic("menu")}</button>`)+
+  `<div class="t"><h1>${title}</h1>${inC?`<small>${S.sub?c.n.split(" - ")[0]:"Fall 2026 - Home"}</small>`:""}</div>`+
+  (inC?`<button>${ic("nb")}</button>`:t=="dashboard"?`<button>${ic("nb")}</button><button onclick="S.list=!S.list;render()">${ic("layout")}</button>`:"");
+ $("main").innerHTML=V[t]();$("main").scrollTop=0;
+ $("nav").innerHTML=[["dashboard","Dashboard"],["calendar","Calendar"],["todo","To-do"],["notifications","Notifications",4],["inbox","Inbox",2]].map(n=>`<button class="${(t==n[0]||(inC&&n[0]=="dashboard"))?"on":""}" onclick="tab('${n[0]}')">${ic(n[0])}${n[1]}${n[2]?`<i class="dot" style="font-style:normal">${n[2]}</i>`:""}</button>`).join("");
+}
+function tab(t){S={...S,tab:t,course:null,sub:null};render()}
+function openCourse(k){S={...S,tab:"course",course:k,sub:null};drawer(0);render()}
+function sub(s){S.sub=s;render()}
+function back(){if(S.sub)S.sub=null;else{S.tab="dashboard";S.course=null}render()}
+function drawer(o){$("drawer").classList.toggle("open",!!o)}
+function openItem(k,mi,ii){const it=C[k].m[mi].i[ii];$("mt").textContent=it.n;
+ $("mb").innerHTML=`<h2>${it.n}</h2><div style="color:var(--mut);font-size:13px;margin-bottom:16px">${C[k].n}${it.d?" · Due "+it.d:""}${it.pts?" · "+it.pts+" pts":""}</div><p>${it.b}</p>${it.s!=null?`<div class="big">${it.s}/${it.pts}</div>`:it.pts?`<div class="btn" onclick="this.textContent='Submitted ✓'">Submit Assignment</div>`:""}`;$("modal").classList.add("open")}
+function openMail(i){const m=MAIL[i];$("mt").textContent=m[1];$("mb").innerHTML=`<h2>${m[1]}</h2><div style="color:var(--mut);font-size:13px;margin-bottom:16px">From ${m[0]} · ${m[3]}</div><p>${m[2]}</p><div class="btn">Reply</div>`;$("modal").classList.add("open")}
+function closeM(){$("modal").classList.remove("open")}
+$("dl").innerHTML=`<a onclick="tab('dashboard');drawer(0)">${ic("dashboard")}Dashboard</a>`+Object.keys(C).map(k=>`<a onclick="openCourse('${k}')">${ic("modules")}${C[k].n.split(" - ")[0]}</a>`).join("")+`<a onclick="alert('Help: helpdesk@seminolestate.edu')">${ic("help")}Help</a>`;
+render();
+if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js").catch(()=>{});
+</script>
+</body>
+</html>
